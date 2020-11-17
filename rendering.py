@@ -44,8 +44,8 @@ w_queen_rect = (232, 0, 232, 232)
 
 # generating squares
 
-# SQUARESIZE = 135
-SQUARESIZE = (SCREENWIDTH - (XBUFFER * 2)) / 8
+SQUARESIZE = 135
+#SQUARESIZE = (SCREENWIDTH - (XBUFFER * 2)) / 8
 DARK = (118, 150, 86)
 LIGHT = (238, 238, 210)
 FILES = ["A", "B", "C", "D", "E", "F", "G", "H"]
@@ -57,6 +57,8 @@ streaming_game = False
 board_generated = False
 
 Game = Game("")
+
+Move = ["", ""]
 
 def generate_squares(side):
   squares.clear() 
@@ -78,8 +80,14 @@ def generate_squares(side):
       
       sq = Square(coords, x, y, width, height, colour, myfont)
       squares[coords] = sq
-      print(sq)
 
+def generate_e2e3e4():
+  squares.clear()
+
+  squares["E2"] = Square("E2", 300, 300, SQUARESIZE, SQUARESIZE, LIGHT, myfont)
+  squares["E3"] = Square("E3", 300, 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, DARK, myfont)
+  squares["E4"] = Square("E4", 300, 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, LIGHT, myfont)
+  
 # generate_squares("BLACK")
 
 def generate_pieces():
@@ -113,17 +121,28 @@ def generate_pieces():
 
 # client.challenges.create("SGBOY", False)
 
-generate_squares("WHITE")
+#generate_squares("WHITE")
+generate_e2e3e4()
+
+def getSquare(sqrs, event):
+  for s in sqrs.values():
+        if s.on_square(event.pos[0], event.pos[1]):
+          return s.coordinates.lower()
 
 while True: #Game Loop
   for event in pygame.event.get():
     if event.type in (QUIT, KEYDOWN):
       sys.exit()
+    if event.type in (MOUSEBUTTONDOWN, FINGERDOWN):
+      Move[0] = getSquare(squares, event)
+    elif event.type in (MOUSEBUTTONUP, FINGERUP):
+      Move[1] = getSquare(squares, event)
+      print(Move)
+
     pygame.display.update()
 
     for s in squares.values():
       s.draw(SCREEN)
-      print("Hey")
     # if not board_generated:
     #   print(Game.get_side())
     #   if Game.get_side() is not None:
