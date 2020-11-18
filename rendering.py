@@ -142,8 +142,9 @@ def validate_move(Move):
   return Move[0] + Move[1]
 
 def getSquare(sqrs, event):
+  mx, my = pygame.mouse.get_pos()
   for s in sqrs.values():
-        if s.on_square(event.pos[0], event.pos[1]):
+        if s.on_square(mx, my):
           return s.coordinates.lower()
 
 while True: #Game Loop
@@ -152,11 +153,9 @@ while True: #Game Loop
       sys.exit()
     if event.type == FINGERUP:
       if Move[0] == "":
-        #Move[0] = getSquare(squares, event)
-        print(event)
+        Move[0] = getSquare(squares, event)
       elif Move[0] != "" and Move[1] == "":
-        #Move[1] = getSquare(squares, event)
-        print(event)
+        Move[1] = getSquare(squares, event)
       if validate_move(Move):
         try:
           client.board.make_move(Game.game_id, Move)
