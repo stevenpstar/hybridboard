@@ -152,9 +152,11 @@ while True: #Game Loop
       sys.exit()
     if event.type == FINGERUP:
       if Move[0] == "":
-        Move[0] = getSquare(squares, event)
+        #Move[0] = getSquare(squares, event)
+        print(event)
       elif Move[0] != "" and Move[1] == "":
-        Move[1] = getSquare(squares, event)
+        #Move[1] = getSquare(squares, event)
+        print(event)
       if validate_move(Move):
         try:
           client.board.make_move(Game.game_id, Move)
