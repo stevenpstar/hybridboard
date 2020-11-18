@@ -44,8 +44,8 @@ w_queen_rect = (232, 0, 232, 232)
 
 # generating squares
 
-#SQUARESIZE = 135
-SQUARESIZE = (SCREENWIDTH - (XBUFFER * 2)) / 8
+SQUARESIZE = 135
+#SQUARESIZE = (SCREENWIDTH - (XBUFFER * 2)) / 8
 DARK = (118, 150, 86)
 LIGHT = (238, 238, 210)
 FILES = ["A", "B", "C", "D", "E", "F", "G", "H"]
@@ -84,13 +84,19 @@ def generate_squares(side):
 def generate_e2e3e4():
   squares.clear()
 
-  squares["E2"] = Square("E2", 300, 300, SQUARESIZE, SQUARESIZE, LIGHT, None)
-  squares["E3"] = Square("E3", 300, 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, DARK, None)
-  squares["E4"] = Square("E4", 300, 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, LIGHT, None)
+  xOff = 200
 
-  squares["F2"] = Square("F2", 300 + SQUARESIZE, 300, SQUARESIZE, SQUARESIZE, DARK, None)
-  squares["F3"] = Square("F3", 300 + SQUARESIZE, 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, LIGHT, None)
-  squares["F4"] = Square("F4", 300 + SQUARESIZE, 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, DARK, None)
+  squares["D2"] = Square("D2", xOff + SQUARESIZE, 300, SQUARESIZE, SQUARESIZE, DARK, None)
+  squares["D3"] = Square("D3", xOff + SQUARESIZE, 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, LIGHT, None)
+  squares["D4"] = Square("D4", xOff + SQUARESIZE, 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, DARK, None)
+
+  squares["E2"] = Square("E2", xOff + (SQUARESIZE * 2), 300, SQUARESIZE, SQUARESIZE, LIGHT, None)
+  squares["E3"] = Square("E3", xOff + (SQUARESIZE * 2), 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, DARK, None)
+  squares["E4"] = Square("E4", xOff + (SQUARESIZE * 2), 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, LIGHT, None)
+
+  squares["F2"] = Square("F2", xOff + (SQUARESIZE * 3), 300, SQUARESIZE, SQUARESIZE, DARK, None)
+  squares["F3"] = Square("F3", xOff + (SQUARESIZE * 3), 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, LIGHT, None)
+  squares["F4"] = Square("F4", xOff + (SQUARESIZE * 3), 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, DARK, None)
   
 # def generate_pieces():
   # squares["A1"] = Piece("Rook", 5, "WHITE", "")
