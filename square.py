@@ -18,8 +18,8 @@ class Square:
 
   def draw(self, SCREEN):
     pygame.draw.rect(SCREEN, self.colour, (self.x, self.y, self.width, self.height))
-    self.font.render_to(SCREEN, (self.x + self.width - 46, self.y + self.height - 32), self.coordinates, 
-    (self.colour[0] - 10, self.colour[1] - 10, self.colour[2] - 10))
+    # self.font.render_to(SCREEN, (self.x + self.width - 46, self.y + self.height - 32), self.coordinates, 
+    # (self.colour[0] - 10, self.colour[1] - 10, self.colour[2] - 10))
     if type(self.piece) == Piece:
         self.piece.draw(self.x, self.y, SCREEN)
   

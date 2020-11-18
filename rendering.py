@@ -1,5 +1,5 @@
 import sys, pygame
-import pygame.freetype
+#import pygame.freetype
 import berserk
 import threading
 from game import Game
@@ -32,10 +32,10 @@ squares = {}
 pieces = {}
 
 
-myfont = pygame.freetype.SysFont('Verdana', 30)
+myfont = None# pygame.freetype.SysFont('Verdana', 30)
 
 filename = 'assets/pieces.png'
-pieces_image = pygame.image.load("assets/pieces.png")
+#pieces_image = pygame.image.load("assets/pieces.png")
 
 #232 x 232 ?
 
@@ -44,8 +44,8 @@ w_queen_rect = (232, 0, 232, 232)
 
 # generating squares
 
-SQUARESIZE = 135
-#SQUARESIZE = (SCREENWIDTH - (XBUFFER * 2)) / 8
+#SQUARESIZE = 135
+SQUARESIZE = (SCREENWIDTH - (XBUFFER * 2)) / 8
 DARK = (118, 150, 86)
 LIGHT = (238, 238, 210)
 FILES = ["A", "B", "C", "D", "E", "F", "G", "H"]
@@ -84,17 +84,19 @@ def generate_squares(side):
 def generate_e2e3e4():
   squares.clear()
 
-  squares["E2"] = Square("E2", 300, 300, SQUARESIZE, SQUARESIZE, LIGHT, myfont)
-  squares["E3"] = Square("E3", 300, 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, DARK, myfont)
-  squares["E4"] = Square("E4", 300, 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, LIGHT, myfont)
-  
-# generate_squares("BLACK")
+  squares["E2"] = Square("E2", 300, 300, SQUARESIZE, SQUARESIZE, LIGHT, None)
+  squares["E3"] = Square("E3", 300, 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, DARK, None)
+  squares["E4"] = Square("E4", 300, 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, LIGHT, None)
 
-def generate_pieces():
+  squares["F2"] = Square("F2", 300 + SQUARESIZE, 300, SQUARESIZE, SQUARESIZE, DARK, None)
+  squares["F3"] = Square("F3", 300 + SQUARESIZE, 300 - SQUARESIZE, SQUARESIZE, SQUARESIZE, LIGHT, None)
+  squares["F4"] = Square("F4", 300 + SQUARESIZE, 300 - (SQUARESIZE * 2), SQUARESIZE, SQUARESIZE, DARK, None)
+  
+# def generate_pieces():
   # squares["A1"] = Piece("Rook", 5, "WHITE", "")
   # squares["B1"] = Piece("Knight", 3, "WHITE", "")
   # squares["C1"] = Piece("Bishop", 3, "WHITE", "")
-  squares["D1"].piece = Piece("Queen", 9, "WHITE", w_queen_rect, pieces_image)
+  # squares["D1"].piece = Piece("Queen", 9, "WHITE", w_queen_rect, pieces_image)
   # squares["E1"] = Piece("King", 10, "WHITE", "")
   # squares["F1"] = Piece("Bishop", 3, "WHITE", "")
   # squares["G1"] = Piece("Knight", 3, "WHITE", "")
@@ -115,14 +117,17 @@ def generate_pieces():
   # for j in FILES:
   #   squares[j + "7"] = Piece("Pawn", 1, "BLACK", "")
 
-# event_stream = EventStream("", client, Game)
-# event_stream.start()
-# streaming_events = True
+event_stream = EventStream("", client, Game)
+event_stream.start()
+streaming_events = True
 
-# client.challenges.create("SGBOY", False)
+client.challenges.create("SGBOY", False, None, None, None, "white", None, None)
 
 #generate_squares("WHITE")
 generate_e2e3e4()
+
+def validate_move(Move):
+  return Move[0] + Move[1]
 
 def getSquare(sqrs, event):
   for s in sqrs.values():
@@ -137,19 +142,20 @@ while True: #Game Loop
       Move[0] = getSquare(squares, event)
     elif event.type in (MOUSEBUTTONUP, FINGERUP):
       Move[1] = getSquare(squares, event)
-      print(Move)
+      print(Game.game_id)
+      try:
+        client.board.make_move(Game.game_id, validate_move(Move))
+      except:
+        print("Illegal move bb")
+      
+      Move = ["", ""]
 
     pygame.display.update()
 
     for s in squares.values():
       s.draw(SCREEN)
-    # if not board_generated:
-    #   print(Game.get_side())
-    #   if Game.get_side() is not None:
-    #     generate_squares(Game.get_side())
-    #     generate_pieces()
-    #     board_generated = True
-      
-
-
-  
+    #if not board_generated:
+      #if Game.get_side() is not None:
+       # generate_squares(Game.get_side())
+       # generate_pieces()
+       # board_generated = True

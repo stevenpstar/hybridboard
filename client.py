@@ -51,6 +51,8 @@ class EventStream(threading.Thread):
         self.game.game_id = game_id['id']
         game = GameStream(game_id['id'], self.client, self.game)
         game.start()
+      elif inc_event['type'] == 'gameFinish':
+        return
 
 
 
