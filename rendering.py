@@ -133,6 +133,12 @@ client.challenges.create("SGBOY", False, None, None, None, "white", None, None)
 generate_e2e3e4()
 
 def validate_move(Move):
+  if Move[0] == "":
+    return False
+  if Move[1] == "":
+    return False
+  if Move[0] == Move[1]:
+    return False
   return Move[0] + Move[1]
 
 def getSquare(sqrs, event):
@@ -144,15 +150,16 @@ while True: #Game Loop
   for event in pygame.event.get():
     if event.type in (QUIT, KEYDOWN):
       sys.exit()
-    if event.type in (MOUSEBUTTONDOWN, FINGERDOWN):
-      Move[0] = getSquare(squares, event)
-    elif event.type in (MOUSEBUTTONUP, FINGERUP):
-      Move[1] = getSquare(squares, event)
-      print(Game.game_id)
-      try:
-        client.board.make_move(Game.game_id, validate_move(Move))
-      except:
-        print("Illegal move bb")
+    if event.type == FINGERUP:
+      if Move[0] == "":
+        Move[0] = getSquare(squares, event)
+      elif Move[0] != "" and Move[1] == "":
+        Move[1] = getSquare(squares, event)
+      if validate_move(Move):
+        try:
+          client.board.make_move(Game.game_id, Move)
+        except:
+          print("Illegal move bb")
       
       Move = ["", ""]
 
