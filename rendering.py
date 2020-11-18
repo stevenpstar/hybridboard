@@ -143,8 +143,10 @@ def validate_move(Move):
 
 def getSquare(sqrs, event):
   mx, my = pygame.mouse.get_pos()
+  print(mx, my)
   for s in sqrs.values():
         if s.on_square(mx, my):
+          print("On square: " + s.coordinates.lower())
           return s.coordinates.lower()
 
 while True: #Game Loop
