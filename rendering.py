@@ -9,6 +9,7 @@ from pygame.locals import *
 from square import Square
 from client import EventStream
 from client import GameStream
+from touchtimer import TouchTimer
 
 session = berserk.TokenSession('V4lt6pmQmgrbzgIB')
 client = berserk.Client(session)
@@ -30,7 +31,7 @@ SCREEN.fill((0, 0, 0))
 
 squares = {}
 pieces = {}
-
+Timer = TouchTimer(0, 0, 100, 100)
 
 myfont = None# pygame.freetype.SysFont('Verdana', 30)
 
@@ -129,18 +130,23 @@ streaming_events = True
 
 client.challenges.create("SGBOY", False, None, None, None, "white", None, None)
 
+#we need to render a timer button
+
+
 #generate_squares("WHITE")
 generate_e2e3e4()
 
 def validate_move(Move):
   if Move[0] == "":
+    print("First Empty")
     return False
   if Move[1] == "":
+    print("Second empty")
     return False
   if Move[0] == Move[1]:
+    print("Same place")
     return False
-  return Move[0] + Move[1]
-
+  return True
 def getSquare(sqrs, event):
   mx, my = pygame.mouse.get_pos()
   print(mx, my)
@@ -155,16 +161,22 @@ while True: #Game Loop
       sys.exit()
     if event.type == FINGERUP:
       if Move[0] == "":
+        print("First Square")
         Move[0] = getSquare(squares, event)
       elif Move[0] != "" and Move[1] == "":
-        Move[1] = getSquare(squares, event)
+        print("Second Square")
+        if getSquare(squares, event) != Move[0]:
+            Move[1] = getSquare(squares, event)
+      print(Move)
       if validate_move(Move):
         try:
-          client.board.make_move(Game.game_id, Move)
+          mv = Move[0] + Move[1]
+          client.board.make_move(Game.game_id, mv)
         except:
           print("Illegal move bb")
-      
-      Move = ["", ""]
+      else:
+        if Move[0] != "" and Move[1] != "":
+           Move = ["", ""]
 
     pygame.display.update()
 
