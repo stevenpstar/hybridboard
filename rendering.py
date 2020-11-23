@@ -22,8 +22,8 @@ moves = []
 
 pygame.init()
 
-SCREENWIDTH = 1024 #1920
-SCREENHEIGHT = 600 #1080
+SCREENWIDTH = 640 #1920
+SCREENHEIGHT = 480 #1080
 XBUFFER = (SCREENWIDTH - SCREENHEIGHT) / 2
 
 SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
@@ -33,6 +33,7 @@ squares = {}
 pieces = {}
 Timer = TouchTimer(0, 0, 100, 100)
 
+Timer2 = TouchTimer(0, 200, 100, 100)
 myfont = None# pygame.freetype.SysFont('Verdana', 30)
 
 filename = 'assets/pieces.png'
@@ -130,8 +131,9 @@ streaming_events = True
 
 client.challenges.create("SGBOY", False, None, None, None, "white", None, None)
 
-#we need to render a timer button
+#we need to track the last touch up coordinates
 
+lastTouchUp = None
 
 #generate_squares("WHITE")
 generate_e2e3e4()
@@ -147,37 +149,57 @@ def validate_move(Move):
     print("Same place")
     return False
   return True
+
 def getSquare(sqrs, event):
-  mx, my = pygame.mouse.get_pos()
+#  mx, my = pygame.mouse.get_pos()
+  mx = event.x * 600
+  my = event.y * 480
   print(mx, my)
   for s in sqrs.values():
         if s.on_square(mx, my):
           print("On square: " + s.coordinates.lower())
           return s.coordinates.lower()
+  return None
+
+def try_move(game_id, move):
+  print(move)
+  if validate_move(move):
+     try:
+       mv = move[0] + move[1]
+       client.board.make_move(Game.game_id, mv)
+     except:
+       print("Illegal move bb")
+  else:
+    if move[0] != "" and move[1] != "":
+      Move = ["", ""]
+
 
 while True: #Game Loop
   for event in pygame.event.get():
-    if event.type in (QUIT, KEYDOWN):
+    if event.type == (QUIT):
       sys.exit()
     if event.type == FINGERUP:
-      if Move[0] == "":
-        print("First Square")
-        Move[0] = getSquare(squares, event)
-      elif Move[0] != "" and Move[1] == "":
-        print("Second Square")
-        if getSquare(squares, event) != Move[0]:
-            Move[1] = getSquare(squares, event)
-      print(Move)
-      if validate_move(Move):
-        try:
-          mv = Move[0] + Move[1]
-          client.board.make_move(Game.game_id, mv)
-        except:
-          print("Illegal move bb")
-      else:
-        if Move[0] != "" and Move[1] != "":
-           Move = ["", ""]
-
+      lastTouchUp = getSquare(squares, event)
+      print("Last Touch Up")
+      print(lastTouchUp)
+    elif event.type == FINGERDOWN:
+        print("Finger Down")
+        mx, my = pygame.mouse.get_pos()
+        if Timer.on_square(mx, my):
+            Move[1] = lastTouchUp
+            try_move(Game.game_id, Move)
+        elif Timer2.on_square(mx, my):
+            Move = ["", ""]
+        else:
+            if Move[0] == "":
+                Move[0] = getSquare(squares, event)
+                print(Move[0])
+                if Move[0] == None:
+                    Move[0] = ""
+      
+    
+    Timer.draw(SCREEN)
+    Timer2.draw(SCREEN)
     pygame.display.update()
 
     for s in squares.values():

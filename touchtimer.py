@@ -1,6 +1,6 @@
 import pygame
 
-class Touchtimer:
+class TouchTimer:
 
     def __init__(self, x, y, width, height):
         self.x = x
@@ -9,13 +9,11 @@ class Touchtimer:
         self.height = height
         self.colour = (0, 0, 255)
 
-    def __init__(self, x, y):
-      
     def on_square(self, x, y):
-         if x > self.x and x < self.x + self.width and y > self.y and y < self.y + self.height:
-             return True
+        if x > self.x and x < self.x + self.width and y > self.y and y < self.y + self.height:
+            return True
         else:
-             return False
+            return False
 
 
     def draw(self, SCREEN): 
