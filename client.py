@@ -18,6 +18,7 @@ class GameStream(threading.Thread):
 
   def run(self):
     for event in self.client.board.stream_game_state(self.game_id):
+      print("Is this being printed?")
       print(event)
       # get player sides
       if 'white' in event:
@@ -27,6 +28,9 @@ class GameStream(threading.Thread):
         else:
           print('Setting to Black')
           self.game.set_side("BLACK")
+      if 'type' in event:
+        if event['type'] == 'gameState':
+          self.game.moves = event['moves']
 
 
 
@@ -53,6 +57,10 @@ class EventStream(threading.Thread):
         game.start()
       elif inc_event['type'] == 'gameFinish':
         return
+      if inc_event['type'] == 'gameState':
+        self.game.moves = inc_event['moves']
+        print("moves:")
+        print(self.game.moves)
 
 
 
@@ -80,4 +88,3 @@ class EventStream(threading.Thread):
 #       print("Setting ID and starting Game?")
 #       game = Game(gameId)
 #       game.start()
-
